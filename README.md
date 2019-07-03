@@ -28,5 +28,46 @@ You will need the following Maven dependencies
 
 # Building Deployment package
 
+### From terminal
+
+Execute `mvn package shade:shade`. This will create a JAR artifact `./target/tusc-sample-0.0.1.jar`
+
+### From Eclipse
 You will need to create a `shaded` package that is ready for deployment.
 Create a new Maven build with `package shade:shade` goal.
+
+# Deploy using AWS SAM (Serverless Aplication Model)
+
+```bash
+# PowerShell
+[System.Environment]::SetEnvironmentVariable("BUCKET_NAME", "your-bucket")
+
+# CMD
+set BUCKET_NAME=your-bucket
+
+# Bash
+export BUCKET_NAME=your-bucket
+
+# Fish
+set -x BUCKET_NAME your-bucket
+```
+
+```bash
+# Create package
+sam package \
+    --template-file template.yaml \
+    --output-template-file packaged.yaml \
+    --s3-bucket $BUCKET_NAME
+
+# Deploy package
+sam deploy \
+    --template-file packaged.yaml \
+    --stack-name tusc-sample \
+    --capabilities CAPABILITY_IAM
+```
+
+# Userful articles
+* https://willhamill.com/2016/12/12/aws-api-gateway-lambda-proxy-request-and-response-objects
+* https://docs.aws.amazon.com/lambda/latest/dg/java-create-jar-pkg-maven-and-eclipse.html
+* https://docs.aws.amazon.com/lambda/latest/dg/java-handler-using-predefined-interfaces.html
+* https://github.com/aws-samples/aws-sam-java-rest

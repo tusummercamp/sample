@@ -4,6 +4,10 @@
   <groupId>com.visteoncloud</groupId>
   <artifactId>tusc-sample</artifactId>
   <name>tusc-sample</name>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.1</version>
   <description>TU Summer Camp sample project</description>
+  <properties>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
 </project>
