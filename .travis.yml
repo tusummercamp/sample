@@ -8,6 +8,9 @@ addons:
     - name: aws-cli
       confinement: classic
 
+before_install:
+  - pip install aws-sam-cli
+
 stages:
   - build
   - name: deploy
@@ -24,3 +27,7 @@ jobs:
     - stage: deploy
       script:
       - aws --version
+      - sam --version
+      - sam validate
+      - sam package --template-file template.yaml --output-template-file packaged.yaml --s3-bucket $BUCKET_NAME
+      - sam deploy --template-file packaged.yaml --capabilities CAPABILITY_IAM --stack-name $STACK_NAME

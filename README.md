@@ -21,6 +21,11 @@ You will need the following Maven dependencies
 * Artifact Id: aws-lambda-java-core
 * Version: 1.1.0
 
+### aws-lambda-java-events
+* Group Id: com.amazonaws
+* Artifact Id: aws-lambda-java-events
+* Version: 2.2.6
+
 ### maven-shade-plugin
 * Group Id: org.apache.maven.plugins
 * Artifact Id: maven-shade-plugin
