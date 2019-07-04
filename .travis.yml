@@ -22,10 +22,11 @@ jobs:
     - stage: build
       script:
       - mvn test
-      - mvn package shade:shade
-
+      - mvn package
+      
     - stage: deploy
       script:
+      - mvn package shade:shade
       - aws --version
       - sam --version
       - sam validate
