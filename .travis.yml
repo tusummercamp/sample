@@ -9,7 +9,7 @@ addons:
       confinement: classic
 
 before_install:
-  - pip install aws-sam-cli
+  - pip install aws-sam-cli --user
 
 stages:
   - build

@@ -1,5 +1,7 @@
 # TU Summer Camp Sample Project
 
+[![Build Status](https://travis-ci.org/tusummercamp/sample.svg?branch=master)](https://travis-ci.org/tusummercamp/sample)
+
 The following project should serve as a sample blueprint for creating AWS Lambda-compatible Java-based projects.
 
 # Development Environment Setup
