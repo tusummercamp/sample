@@ -20,10 +20,14 @@ public class LambdaHandler implements RequestHandler<APIGatewayProxyRequestEvent
 		logger.log("Received request");
 		logger.log(body);
 		
+		String responseBody = "You created a request using ";
+		responseBody += input.getHttpMethod() + "method ";
+		responseBody += "and URL " + input.getResource();
+		
 		// create and return response
 		APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
 		response.setStatusCode(200);
-		response.setBody("Response body comes here");
+		response.setBody(responseBody);
 		return response;
 	}
 
