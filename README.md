@@ -39,25 +39,11 @@ Create a new Maven build with `package shade:shade` goal.
 # Deploy using AWS SAM (Serverless Aplication Model)
 
 ```bash
-# PowerShell
-[System.Environment]::SetEnvironmentVariable("BUCKET_NAME", "your-bucket")
-
-# CMD
-set BUCKET_NAME=your-bucket
-
-# Bash
-export BUCKET_NAME=your-bucket
-
-# Fish
-set -x BUCKET_NAME your-bucket
-```
-
-```bash
 # Create package
 sam package \
     --template-file template.yaml \
     --output-template-file packaged.yaml \
-    --s3-bucket $BUCKET_NAME
+    --s3-bucket your-s3-bucket
 
 # Deploy package
 sam deploy \

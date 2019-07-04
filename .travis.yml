@@ -1,0 +1,23 @@
+language: java
+
+jdk:
+- oraclejdk8
+
+stages:
+  - test
+  - build
+  - name: deploy
+    if: branch = master
+
+jobs:
+  include:
+
+    - stage: test
+      script: mvn test
+
+    - stage: build
+      script: mvn package shade:shade
+
+    - stage: deploy
+      script:
+      - echo Deploying...
