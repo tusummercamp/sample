@@ -17,11 +17,6 @@ stages:
 
 jobs:
   include:
-
-    - stage: build
-      script:
-      - mvn test
-      - mvn package
       
     - stage: deploy
       script:
