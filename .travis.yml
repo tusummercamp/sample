@@ -12,7 +12,6 @@ before_install:
   - pip install aws-sam-cli --user
 
 stages:
-  - build
   - name: deploy
     if: branch = master
 
