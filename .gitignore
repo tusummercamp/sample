@@ -27,3 +27,7 @@ packaged.yaml
 
 # Target
 target/
+.settings
+.classpath
+.project
+.vscode
