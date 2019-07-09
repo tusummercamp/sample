@@ -1,6 +1,7 @@
 package com.visteoncloud.tusc.sample;
 
 import java.util.List;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -30,15 +31,15 @@ public class DBClient {
 		System.out.println("Connected to DB");
 	}
 	
-	public void createItems(String user, HashMap<Integer, Float> data) {
+	public void createItems(String user, HashMap<BigInteger, Float> data) {
 		
 		// create ArrayList<Item> to hold data we are going to insert in the DB
 		ArrayList<Item> items = new ArrayList<Item>();
 		
 		// iterate over the data
-		Iterator<Entry<Integer, Float>> it = data.entrySet().iterator();
+		Iterator<Entry<BigInteger, Float>> it = data.entrySet().iterator();
 		while (it.hasNext()) {
-			Entry<Integer, Float> entry = it.next();
+			Entry<BigInteger, Float> entry = it.next();
 			Item item = new Item();
 			item.withPrimaryKey("User", user, "Time", entry.getKey());
 			item.withNumber("Value", entry.getValue());

@@ -1,5 +1,6 @@
 package com.visteoncloud.tusc.sample;
 
+import java.math.BigInteger;
 import java.util.HashMap;
 
 import org.json.JSONArray;
@@ -60,12 +61,12 @@ public class LambdaHandler implements RequestHandler<APIGatewayProxyRequestEvent
 		try {
 			
 			JSONArray requestBody = new JSONArray(body);
-			HashMap<Integer, Float> dbData = new HashMap<Integer, Float>();
+			HashMap<BigInteger, Float> dbData = new HashMap<BigInteger, Float>();
 			
 			// build data that can be inserted into DB
 			for (int i = 0; i < requestBody.length(); i++) {
 				JSONObject obj = requestBody.getJSONObject(i);
-				Integer time = obj.getInt("time");
+				BigInteger time = obj.getBigInteger("time");
 				Float value = obj.getFloat("value");
 				dbData.put(time, value);
 			}
