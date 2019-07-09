@@ -18,9 +18,17 @@ import com.amazonaws.services.dynamodbv2.model.WriteRequest;
 
 public class DBClient {
 	
-	static AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
-    static DynamoDB dynamoDB = new DynamoDB(client);
-	static String tableName = System.getenv("DYNAMODB_TABLE");	
+	AmazonDynamoDB client;
+    DynamoDB dynamoDB;
+	String tableName;
+
+	public DBClient() {
+		System.out.println("Creating DynamoDB connection");
+		client = AmazonDynamoDBClientBuilder.defaultClient();
+		dynamoDB = new DynamoDB(client);
+		tableName = System.getenv("DYNAMODB_TABLE");
+		System.out.println("Connected to DB");
+	}
 	
 	public void createItems(String user, HashMap<Integer, Float> data) {
 		

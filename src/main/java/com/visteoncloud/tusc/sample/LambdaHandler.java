@@ -13,13 +13,18 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
 
 public class LambdaHandler implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent>  {
 	
-	// static DBClient dbClient = new DBClient();
+	static DBClient dbClient = null;
 
 	public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent input, Context context) {
 		
 		// get logger
 		LambdaLogger logger = context.getLogger();
-				
+		
+		// create DB client
+		if (dbClient == null) {
+			dbClient = new DBClient();
+		}
+		
 		logger.log("Received request with method " + input.getHttpMethod());
 		logger.log(input.getBody());
 		
@@ -66,7 +71,7 @@ public class LambdaHandler implements RequestHandler<APIGatewayProxyRequestEvent
 			}
 			
 			// insert into DB
-			// dbClient.createItems("Demo user", dbData);
+			dbClient.createItems("Demo user", dbData);
 			
 			responseBody.put("status", "ok");
 			responseBody.put("data", dbData);

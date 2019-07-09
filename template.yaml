@@ -33,6 +33,7 @@ Resources:
       CodeUri: target/tusc-sample-0.0.1.jar
       Handler: com.visteoncloud.tusc.sample.LambdaHandler::handleRequest
       Runtime: java8
+      MemorySize: 1024
       Policies:
       - DynamoDBCrudPolicy:
             TableName: !Ref DataTable
