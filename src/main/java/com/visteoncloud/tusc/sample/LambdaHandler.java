@@ -1,5 +1,8 @@
 package com.visteoncloud.tusc.sample;
 
+import java.util.HashMap;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.amazonaws.services.lambda.runtime.Context;
@@ -9,34 +12,98 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
 
 public class LambdaHandler implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent>  {
+	
+	DBClient dbClient = null;
 
 	public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent input, Context context) {
 		
 		// get logger
 		LambdaLogger logger = context.getLogger();
 		
-		// get body
-		JSONObject body = new JSONObject(input.getBody());
-		String foo = body.getString("foo");
-		Integer baz = body.getInt("baz");
+		// create DB client
+		if (dbClient == null) {
+			dbClient = new DBClient(logger);
+		}
 		
-		// log body
-		logger.log("Received request");
-		logger.log("Method " + input.getHttpMethod());
-		logger.log("Path " + input.getPath());
-		logger.log("Raw body " + input.getBody());
-		logger.log("foo " + foo);
-		logger.log("baz " + baz);
+		logger.log("Received request with method " + input.getHttpMethod());
+		logger.log(input.getBody());
 		
-		// TODO: handle request data here
+		// handle request
+		APIGatewayProxyResponseEvent response;
 		
-		JSONObject responseBody = new JSONObject();
-		responseBody.put("status", "ok");
+		String method = input.getHttpMethod();
+		if (method.equalsIgnoreCase("get")) {
+			
+			response = handleGet();
+			
+		} else if (method.equalsIgnoreCase("post")) {
+			
+			response = handlePost(input.getBody());
+			
+		} else {
+			response = new APIGatewayProxyResponseEvent();
+			response.setStatusCode(400);
+			JSONObject responseBody = new JSONObject();
+			responseBody.put("status", "error");
+			responseBody.put("errorMessage", "Unsupported method: " + method);
+			response.setBody(responseBody.toString());
+		}
 		
-		// create and return response
+		return response;
+	}
+	
+	private APIGatewayProxyResponseEvent handlePost(String body) {
+		
 		APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
-		response.setStatusCode(200);
+		JSONObject responseBody = new JSONObject();
+		
+		try {
+			
+			JSONArray requestBody = new JSONArray(body);
+			HashMap<Integer, Float> dbData = new HashMap<Integer, Float>();
+			
+			// build data that can be inserted into DB
+			for (int i = 0; i < requestBody.length(); i++) {
+				JSONObject obj = requestBody.getJSONObject(i);
+				Integer time = obj.getInt("time");
+				Float value = obj.getFloat("value");
+				dbData.put(time, value);
+			}
+			
+			// insert into DB
+			dbClient.createItems("Demo user", dbData);
+			
+			responseBody.put("status", "ok");
+			responseBody.put("data", dbData);
+			
+			response.setStatusCode(200);
+			response.setBody(responseBody.toString(2));
+			
+		} catch (Exception e) {
+			
+			responseBody.put("status", "error");
+			responseBody.put("errorMessage", e.toString());
+			
+			response.setStatusCode(400);
+			response.setBody(responseBody.toString());
+		}
+		
+		return response;
+	}
+	
+	private APIGatewayProxyResponseEvent handleGet() {
+		
+		APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
+		JSONObject responseBody = new JSONObject();
+		
+		// build body
+		responseBody.put("status", "error");
+		responseBody.put("errorMessage", "Not implemented");
+		
+		// build response
+		response.setStatusCode(501);
 		response.setBody(responseBody.toString());
+		
 		return response;
 	}
 
