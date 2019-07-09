@@ -14,21 +14,13 @@ import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.TableWriteItems;
 import com.amazonaws.services.dynamodbv2.model.WriteRequest;
-import com.amazonaws.services.lambda.runtime.LambdaLogger;
 
 
 public class DBClient {
 	
 	static AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
     static DynamoDB dynamoDB = new DynamoDB(client);
-	static String tableName = System.getenv("DYNAMODB_TABLE");
-	
-	LambdaLogger logger;
-	
-	public DBClient(LambdaLogger l) {
-		logger = l;
-	}
-	
+	static String tableName = System.getenv("DYNAMODB_TABLE");	
 	
 	public void createItems(String user, HashMap<Integer, Float> data) {
 		
@@ -54,9 +46,9 @@ public class DBClient {
 			
 			Map<String, List<WriteRequest>> unprocessedItems = outcome.getUnprocessedItems();
 			if (outcome.getUnprocessedItems().size() == 0) {
-				logger.log("All items have been written");
+				System.out.println("All items have been written");
 			} else {
-				logger.log("Writing unprocessed items");
+				System.out.println("Writing unprocessed items");
 				outcome = dynamoDB.batchWriteItemUnprocessed(unprocessedItems);
 			}
 			
