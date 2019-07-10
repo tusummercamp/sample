@@ -1,5 +1,7 @@
 package com.visteoncloud.tusc.sample;
 
+import java.util.HashMap;
+
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
 
@@ -45,6 +47,18 @@ public class LambdaTester {
 		request4.setBody("[{\"time\": 123}]");
 		APIGatewayProxyResponseEvent response4 = handler.handleRequest(request4, new TestLambdaContext());
 		System.out.println(response4.getStatusCode() + ": " + response4.getBody());
+
+		System.out.println("============================");
+		
+		// create request - get data
+		APIGatewayProxyRequestEvent request5 = new APIGatewayProxyRequestEvent();
+		request5.setHttpMethod("get");
+		HashMap<String, String> qsp = new HashMap<String, String>();
+		qsp.put("from", "1");
+		qsp.put("to", "1000");
+		request5.setQueryStringParameters(qsp);
+		APIGatewayProxyResponseEvent response5 = handler.handleRequest(request5, new TestLambdaContext());
+		System.out.println(response5.getStatusCode() + ": " + response5.getBody());
 
 	}
 

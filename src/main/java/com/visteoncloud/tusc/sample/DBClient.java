@@ -76,17 +76,18 @@ public class DBClient {
 
 		Table table = dynamoDB.getTable(tableName);
 		long startDate = new Date(from.longValue()).getTime() / 1000;
-		long enDate = new Date(to.longValue()).getTime() / 1000;
+		long endDate = new Date(to.longValue()).getTime() / 1000;
 
-		// prepare query
 		QuerySpec query = new QuerySpec();
-		query.withProjectionExpression("#k_time, Value");
-		query.withKeyConditionExpression("#k_user = :v_user and #k_time >= :v_start and Time < :v_end");
-		query.withNameMap(new NameMap().with("#k_user", "User").with("#k_time", "Time"));
+		query.withProjectionExpression("#k_time, #k_value");
+		query.withKeyConditionExpression("#k_user = :v_user and #k_time >= :v_start");
+		query.withNameMap(new NameMap()
+			.with("#k_user", "User")
+			.with("#k_time", "Time")
+			.with("#k_value", "Value"));
 		query.withValueMap(new ValueMap()
 			.withString(":v_user", user)
-			.withNumber(":v_start", startDate)
-			.withNumber(":v_end", enDate));
+			.withNumber(":v_start", startDate));
 
 		// echo query
 		System.out.println(query.toString());
@@ -99,7 +100,10 @@ public class DBClient {
 		Iterator<Item> it = items.iterator();
 		while(it.hasNext()) {
 			Item item = it.next();
-			returnValue.put(item.getBigInteger("Time"), item.getFloat("Value"));
+			BigInteger time = item.getBigInteger("Time");
+			if (time.longValue() < endDate) {
+				returnValue.put(time, item.getFloat("Value"));
+			}
 		}
 
 		return returnValue;
