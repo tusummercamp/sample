@@ -37,7 +37,7 @@ public class LambdaHandler implements RequestHandler<APIGatewayProxyRequestEvent
 		String method = input.getHttpMethod();
 		if (method.equalsIgnoreCase("get")) {
 			
-			response = handleGet(input.getPathParameters());
+			response = handleGet(input.getQueryStringParameters());
 			
 		} else if (method.equalsIgnoreCase("post")) {
 			
@@ -94,15 +94,15 @@ public class LambdaHandler implements RequestHandler<APIGatewayProxyRequestEvent
 		return response;
 	}
 	
-	private APIGatewayProxyResponseEvent handleGet(Map<String, String> pathParameters) {
+	private APIGatewayProxyResponseEvent handleGet(Map<String, String> queryStringParameters) {
 		
 		APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
 		JSONObject responseBody = new JSONObject();
 
 		try {
 
-			BigInteger from = new BigInteger(pathParameters.get("from"));
-			BigInteger to = new BigInteger(pathParameters.get("to"));
+			BigInteger from = new BigInteger(queryStringParameters.get("from"));
+			BigInteger to = new BigInteger(queryStringParameters.get("to"));
 
 			HashMap<BigInteger, Float> result = dbClient.getItems(USER_ID, from, to);
 			
