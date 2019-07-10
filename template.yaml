@@ -10,7 +10,7 @@ Globals:
 
   Api:
     EndpointConfiguration: REGIONAL
-    Cors: "*"
+    Cors: "'*'"
     
 Resources:
 
