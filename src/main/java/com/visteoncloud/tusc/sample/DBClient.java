@@ -75,8 +75,8 @@ public class DBClient {
 	public HashMap<BigInteger, Float> getItems(String user, BigInteger from, BigInteger to) {
 
 		Table table = dynamoDB.getTable(tableName);
-		long startDate = new Date(from.longValue()).getTime() / 1000;
-		long endDate = new Date(to.longValue()).getTime() / 1000;
+		long startDate = new Date(from.longValue() * 1000).getTime() / 1000;
+		long endDate = new Date(to.longValue() * 1000).getTime() / 1000;
 
 		QuerySpec query = new QuerySpec();
 		query.withProjectionExpression("#k_time, #k_value");
@@ -89,8 +89,9 @@ public class DBClient {
 			.withString(":v_user", user)
 			.withNumber(":v_start", startDate));
 
-		// echo query
-		System.out.println(query.toString());
+		// echo parameters
+		System.out.println("Start date: " + startDate);
+		System.out.println("End date: " + endDate);
 
 		// execute query
 		ItemCollection<QueryOutcome> items = table.query(query);

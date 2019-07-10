@@ -2,7 +2,9 @@ package com.visteoncloud.tusc.sample;
 
 import java.math.BigInteger;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -104,10 +106,19 @@ public class LambdaHandler implements RequestHandler<APIGatewayProxyRequestEvent
 			BigInteger from = new BigInteger(queryStringParameters.get("from"));
 			BigInteger to = new BigInteger(queryStringParameters.get("to"));
 
+			JSONArray data = new JSONArray();
 			HashMap<BigInteger, Float> result = dbClient.getItems(USER_ID, from, to);
+			Iterator<Entry<BigInteger, Float>> it = result.entrySet().iterator();
+			while (it.hasNext()) {
+				Entry<BigInteger, Float> entry = it.next();
+				JSONObject item = new JSONObject();
+				item.put("time", entry.getKey());
+				item.put("value", entry.getValue());
+				data.put(item);
+			}
 			
 			responseBody.put("status", "ok");
-			responseBody.put("data", result);
+			responseBody.put("data", data);
 			
 			response.setStatusCode(200);
 			response.setBody(responseBody.toString(2));
