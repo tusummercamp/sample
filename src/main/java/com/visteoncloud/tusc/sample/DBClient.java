@@ -81,8 +81,8 @@ public class DBClient {
 		// prepare query
 		QuerySpec query = new QuerySpec();
 		query.withProjectionExpression("Time, Value");
-		query.withKeyConditionExpression("#User = :v_user and Time >= :v_start and Time < :v_end");
-		query.withNameMap(new NameMap().with("#User", "User"));
+		query.withKeyConditionExpression("#k_user = :v_user and #k_time >= :v_start and Time < :v_end");
+		query.withNameMap(new NameMap().with("#k_user", "User").with("#k_time", "Time"));
 		query.withValueMap(new ValueMap()
 			.withString(":v_user", user)
 			.withNumber(":v_start", startDate)
