@@ -3,6 +3,7 @@ package com.visteoncloud.tusc.sample;
 import java.util.List;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -13,7 +14,12 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.document.BatchWriteItemOutcome;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Item;
+import com.amazonaws.services.dynamodbv2.document.ItemCollection;
+import com.amazonaws.services.dynamodbv2.document.QueryOutcome;
+import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.document.TableWriteItems;
+import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
+import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
 import com.amazonaws.services.dynamodbv2.model.WriteRequest;
 
 
@@ -63,6 +69,36 @@ public class DBClient {
 			
 		} while (outcome.getUnprocessedItems().size() > 0);
 		
+	}
+
+	public HashMap<BigInteger, Float> getItems(String user, BigInteger from, BigInteger to) {
+
+		Table table = dynamoDB.getTable(tableName);
+		long startDate = new Date(from.longValue()).getTime() / 1000;
+		long enDate = new Date(to.longValue()).getTime() / 1000;
+
+		// prepare query
+		QuerySpec query = new QuerySpec();
+		query.withProjectionExpression("Time, Value");
+		query.withKeyConditionExpression("User = :v_user and Time >= :v_start and Time < :v_end");
+		query.withValueMap(new ValueMap()
+			.withString(":v_user", user)
+			.withNumber(":v_start", startDate)
+			.withNumber(":v_end", enDate));
+
+		// execute query
+		ItemCollection<QueryOutcome> items = table.query(query);
+		
+		// process results
+		HashMap<BigInteger, Float> returnValue = new HashMap<BigInteger, Float>();
+		Iterator<Item> it = items.iterator();
+		while(it.hasNext()) {
+			Item item = it.next();
+			returnValue.put(item.getBigInteger("Time"), item.getFloat("Value"));
+		}
+
+		return returnValue;
+
 	}
 	
 }
