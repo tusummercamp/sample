@@ -86,6 +86,9 @@ public class DBClient {
 			.withNumber(":v_start", startDate)
 			.withNumber(":v_end", enDate));
 
+		// echo query
+		System.out.println(query.toString());
+
 		// execute query
 		ItemCollection<QueryOutcome> items = table.query(query);
 		

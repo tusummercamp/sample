@@ -2,6 +2,7 @@ package com.visteoncloud.tusc.sample;
 
 import java.math.BigInteger;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -14,6 +15,7 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
 
 public class LambdaHandler implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent>  {
 	
+	final static String USER_ID = "Demo user";
 	static DBClient dbClient = null;
 
 	public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent input, Context context) {
@@ -35,7 +37,7 @@ public class LambdaHandler implements RequestHandler<APIGatewayProxyRequestEvent
 		String method = input.getHttpMethod();
 		if (method.equalsIgnoreCase("get")) {
 			
-			response = handleGet();
+			response = handleGet(input.getPathParameters());
 			
 		} else if (method.equalsIgnoreCase("post")) {
 			
@@ -72,7 +74,7 @@ public class LambdaHandler implements RequestHandler<APIGatewayProxyRequestEvent
 			}
 			
 			// insert into DB
-			dbClient.createItems("Demo user", dbData);
+			dbClient.createItems(USER_ID, dbData);
 			
 			responseBody.put("status", "ok");
 			responseBody.put("data", dbData);
@@ -92,18 +94,34 @@ public class LambdaHandler implements RequestHandler<APIGatewayProxyRequestEvent
 		return response;
 	}
 	
-	private APIGatewayProxyResponseEvent handleGet() {
+	private APIGatewayProxyResponseEvent handleGet(Map<String, String> pathParameters) {
 		
 		APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
 		JSONObject responseBody = new JSONObject();
+
+		try {
+
+			BigInteger from = new BigInteger(pathParameters.get("from"));
+			BigInteger to = new BigInteger(pathParameters.get("to"));
+
+			HashMap<BigInteger, Float> result = dbClient.getItems(USER_ID, from, to);
+			
+			responseBody.put("status", "ok");
+			responseBody.put("data", result);
+			
+			response.setStatusCode(200);
+			response.setBody(responseBody.toString(2));
+
+		} catch (Exception e) {
+
+			responseBody.put("status", "error");
+			responseBody.put("errorMessage", e.toString());
+			
+			response.setStatusCode(400);
+			response.setBody(responseBody.toString());
+
+		}
 		
-		// build body
-		responseBody.put("status", "error");
-		responseBody.put("errorMessage", "Not implemented");
-		
-		// build response
-		response.setStatusCode(501);
-		response.setBody(responseBody.toString());
 		
 		return response;
 	}
