@@ -19,6 +19,7 @@ import com.amazonaws.services.dynamodbv2.document.QueryOutcome;
 import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.document.TableWriteItems;
 import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
+import com.amazonaws.services.dynamodbv2.document.utils.NameMap;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
 import com.amazonaws.services.dynamodbv2.model.WriteRequest;
 
@@ -80,7 +81,8 @@ public class DBClient {
 		// prepare query
 		QuerySpec query = new QuerySpec();
 		query.withProjectionExpression("Time, Value");
-		query.withKeyConditionExpression("User = :v_user and Time >= :v_start and Time < :v_end");
+		query.withKeyConditionExpression("#User = :v_user and Time >= :v_start and Time < :v_end");
+		query.withNameMap(new NameMap().with("#User", "User"));
 		query.withValueMap(new ValueMap()
 			.withString(":v_user", user)
 			.withNumber(":v_start", startDate)
